@@ -84,6 +84,8 @@ class AgentTool(Generic[T]):
         try:
             arg = self.args_schema.model_validate(input)
             res = self.function(arg, bot, model)
+            logger.info(f"Tool run result: {res}")
+            logger.info(f"Type of result: {type(res)}")
             if isinstance(res, list):
                 related_documents = [
                     _function_result_to_related_document(
@@ -157,7 +159,7 @@ def _function_result_to_related_document(
         page_number = res.get("page_number")
         metadata = res.get("metadata")
         score = res.get("score")
-
+        logger.info(f"TextToolResultModel: {content}")
         return RelatedDocumentModel(
             content=(
                 TextToolResultModel(
