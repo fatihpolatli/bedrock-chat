@@ -817,6 +817,8 @@ class RelatedDocumentModel(BaseModel):
     source_name: str | None = None
     source_link: str | None = None
     page_number: int | None = None
+    metadata: dict[str, str] | None = None
+    score: float | None = None
 
     def to_tool_result_model(self, display_citation: bool) -> ToolResultModel:
         if isinstance(self.content, TextToolResultModel):
@@ -870,4 +872,6 @@ class RelatedDocumentModel(BaseModel):
             source_name=self.source_name,
             source_link=self.get_source_link_for_schema(),
             page_number=self.page_number,
+            metadata=self.metadata,
+            score=self.score,
         )
