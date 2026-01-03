@@ -184,7 +184,6 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
                         content=content,
                         source_name=source[0],
                         source_link=source[1],
-                        metadata=metadata,
                         page_number=page_number,
                         metadata=metadata,
                         score=score,
