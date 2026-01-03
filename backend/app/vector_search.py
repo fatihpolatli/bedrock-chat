@@ -28,8 +28,9 @@ class SearchResult(TypedDict):
     source_name: str
     source_link: str
     rank: int
-    metadata: dict[str, Any]
     page_number: int | None
+    metadata: dict[str, Any]
+    score: float
 
 
 def search_result_to_related_document(
@@ -44,6 +45,8 @@ def search_result_to_related_document(
         source_name=search_result["source_name"],
         source_link=search_result["source_link"],
         page_number=search_result["page_number"],
+        metadata=search_result["metadata"],
+        score=search_result["score"],   
     )
 
 
@@ -70,7 +73,8 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
         else bot.bedrock_knowledge_base.knowledge_base_id
     )
     assert knowledge_base_id is not None, "knowledge_base_id must be set"
-
+    rerankModelId = "cohere.rerank-v3-5:0"
+    model_package_arn = f"arn:aws:bedrock:us-east-1::foundation-model/{rerankModelId}"
     try:
         # Init retrieve parameter
         retrieve_parameter: RetrieveRequestTypeDef = {
@@ -158,11 +162,12 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
         search_results = []
         for i, retrieval_result in enumerate(response.get("retrievalResults", [])):
             content = retrieval_result.get("content", {}).get("text", "")
+            score:float = retrieval_result.get("score", 0)
             source = extract_source_from_retrieval_result(retrieval_result)
 
             if source is not None:
                 # get page number from metadata
-                metadata = retrieval_result.get("metadata", {})
+                metadata:dict[str, str] = dict(retrieval_result.get("metadata", {}))
                 page_number = None
                 if "x-amz-bedrock-kb-document-page-number" in metadata:
                     try:
@@ -181,6 +186,8 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
                         source_link=source[1],
                         metadata=metadata,
                         page_number=page_number,
+                        metadata=metadata,
+                        score=score,
                     )
                 )
 
