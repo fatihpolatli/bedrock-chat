@@ -217,6 +217,8 @@ class RelatedDocument(BaseSchema):
     source_name: str | None = None
     source_link: str | None = None
     page_number: int | None = None
+    metadata: dict[str, str] | None = None
+    score: float | None = None
 
 
 class SearchHighlight(BaseSchema):
