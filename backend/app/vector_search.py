@@ -124,7 +124,9 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
 
         # Send retrieve request
         response = agent_client.retrieve(**retrieve_parameter)
+        logger.info(f"Retrieve response: {response}")
 
+        # Extract source from retrieval result
         def extract_source_from_retrieval_result(
             retrieval_result: KnowledgeBaseRetrievalResultTypeDef,
         ) -> tuple[str, str] | None:
@@ -168,6 +170,7 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
             if source is not None:
                 # get page number from metadata
                 metadata:dict[str, str] = dict(retrieval_result.get("metadata", {}))
+                logger.info(f"metadata: {metadata}")
                 page_number = None
                 if "x-amz-bedrock-kb-document-page-number" in metadata:
                     try:
