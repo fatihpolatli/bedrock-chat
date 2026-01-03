@@ -12,6 +12,12 @@ from mypy_boto3_bedrock_runtime.type_defs import ToolSpecificationTypeDef
 from pydantic import BaseModel, JsonValue
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+
 T = TypeVar("T", bound=BaseModel)
 
 
@@ -130,12 +136,17 @@ def _function_result_to_related_document(
     else:
         source_id = source_id_base
 
+    logger.info(f"tool_name: {tool_name}")
+    logger.info(f"source_id: {source_id}")
+    logger.info(f"Converting result to related document: {res}")
+    logger.info(f"Type of result: {type(res)}")
+
     if isinstance(res, str):
         return RelatedDocumentModel(
             content=TextToolResultModel(text=res),
             source_id=source_id,
             source_name=tool_name,
-            page_number=None,
+            page_number=None
         )
 
     elif isinstance(res, dict):
