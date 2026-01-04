@@ -159,11 +159,11 @@ def _function_result_to_related_document(
         page_number = res.get("page_number")
         metadata = res.get("metadata")
         score = res.get("score")
-        logger.info(f"TextToolResultModel: {content}")
+        logger.info(f"_function_result_to_related_document dict: {content}")
         return RelatedDocumentModel(
             content=(
-                TextToolResultModel(
-                    text=content,
+                JsonToolResultModel(
+                    json={"content": content, "metadata": metadata, "score": score},
                 )
                 if isinstance(content, str)
                 else JsonToolResultModel(
