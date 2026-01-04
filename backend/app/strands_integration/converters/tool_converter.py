@@ -74,7 +74,7 @@ def tool_result_model_to_strands_tool_result_content(
     result: ToolResultModel,
 ) -> ToolResultContent:
     """Convert our ToolResultModel to Strands ToolResultContent format."""
-
+    logger.info(f"tool_result_model_to_strands_tool_result_content: {result}")
     if isinstance(result, TextToolResultModel):
         return _text_tool_result_model_to_strands_tool_result_content(result)
 
@@ -130,7 +130,7 @@ def tool_run_result_to_strands_tool_result(
     display_citation: bool,
 ) -> ToolResult:
     """Convert our ToolRunResult back to Strands ToolResult format with source_id included."""
-
+    logger.info(f"tool_run_result_to_strands_tool_result: {result}")
     return {
         "toolUseId": result["tool_use_id"],
         "status": result["status"],
@@ -152,7 +152,7 @@ def _strands_tool_result_content_to_related_document(
     rank: int | None = None,
 ) -> RelatedDocumentModel:
     """Convert ToolResultContent to RelatedDocumentModel."""
-
+    logger.info(f"strands_tool_result_content_to_related_document: {result_content}")
     if rank is not None:
         source_id = f"{source_id_base}@{rank}"
 
@@ -230,7 +230,7 @@ def strands_tool_result_to_tool_run_result(
     result: ToolResult,
 ) -> ToolRunResult:
     """Convert ToolResult to our ToolRunResult format."""
-
+    logger.info(f"strands_tool_result_to_tool_run_result: {result}")
     tool_use_id = result["toolUseId"]
     contents = result["content"]
 
