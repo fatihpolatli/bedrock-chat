@@ -348,8 +348,7 @@ def store_related_documents(
                 "SourceName": related_document.source_name,
                 "SourceLink": related_document.source_link,
                 "Content": related_document.content.model_dump(by_alias=True),
-                "Metadata": related_document.metadata,
-                "Score": decimal(str(related_document.score)),  
+                "Metadata": related_document.metadata
             }
             if related_document.page_number is not None:
                 item_params["PageNumber"] = related_document.page_number
