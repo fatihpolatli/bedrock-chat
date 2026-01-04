@@ -163,7 +163,7 @@ class NotificationSender:
                 )
             ).encode("utf-8")
         )
-
+        logger.info(f"Tool result: {run_result["related_documents"]}")
         for related_document in run_result["related_documents"]:
             self.notify(
                 payload=json.dumps(
@@ -171,7 +171,7 @@ class NotificationSender:
                         status="AGENT_RELATED_DOCUMENT",
                         result={
                             "toolUseId": run_result["tool_use_id"],
-                            "relatedDocument": related_document.to_schema().model_dump(
+                            "relatedDocument": related_document.to_schema().model_dump_json(
                                 by_alias=True
                             ),
                         },
