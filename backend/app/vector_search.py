@@ -37,6 +37,7 @@ def search_result_to_related_document(
     search_result: SearchResult,
     source_id_base: str,
 ) -> RelatedDocumentModel:
+    logger.info(f"search_result_to_related_document | data {search_result}")
     return RelatedDocumentModel(
         content=JsonToolResultModel(
             json={"content":search_result["content"],"metadata":search_result["metadata"],"score":search_result["score"]}
