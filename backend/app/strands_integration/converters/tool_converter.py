@@ -165,6 +165,8 @@ def _strands_tool_result_content_to_related_document(
             source_id=source_id,
             source_name=tool_name,
             page_number=None,
+            metadata=result_content.get("metadata"),
+            score=result_content.get("score"),
         )
 
     elif "json" in result_content:
@@ -175,6 +177,8 @@ def _strands_tool_result_content_to_related_document(
             source_name = json.get("source_name")
             source_link = json.get("source_link")
             page_number = json.get("page_number")
+            metadata = json.get("metadata")
+            score = json.get("score")
 
             return RelatedDocumentModel(
                 content=(
@@ -194,6 +198,8 @@ def _strands_tool_result_content_to_related_document(
                 source_name=str(source_name) if source_name is not None else tool_name,
                 source_link=str(source_link) if source_link is not None else None,
                 page_number=int(page_number) if page_number is not None else None,
+                metadata=metadata,
+                score=float(score) if score is not None else None,
             )
 
     elif "image" in result_content:
