@@ -418,6 +418,7 @@ ToolResultModel = (
 
 
 def tool_result_model_from_tool_result(tool_result: ToolResult) -> ToolResultModel:
+    logger.info(f"tool_result_model_from_tool_result: {tool_result}")
     if isinstance(tool_result, TextToolResult):
         return TextToolResultModel.from_text_tool_result(tool_result=tool_result)
 
@@ -821,6 +822,7 @@ class RelatedDocumentModel(BaseModel):
     score: float | None = None
 
     def to_tool_result_model(self, display_citation: bool) -> ToolResultModel:
+        logger.info(f"to_tool_result_model | self: {self} display_citation: {display_citation}")
         if isinstance(self.content, TextToolResultModel):
             if display_citation:
                 return JsonToolResultModel(
