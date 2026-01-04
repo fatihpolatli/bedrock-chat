@@ -102,6 +102,8 @@ export type RelatedDocument = {
   sourceName?: string;
   sourceLink?: string;
   pageNumber?: number;
+  metadata?: { [key: string]: string };
+  score?: number;
 };
 
 export type DisplayMessageContent = MessageContent & {
@@ -136,7 +138,7 @@ export type ConversationMeta = {
   id: string;
   title: string;
   createTime: number;
-  lastMessageId: string; 
+  lastMessageId: string;
   model: Model;
   botId?: string;
 };
