@@ -171,7 +171,7 @@ class NotificationSender:
                         status="AGENT_RELATED_DOCUMENT",
                         result={
                             "toolUseId": run_result["tool_use_id"],
-                            "relatedDocument": related_document.to_schema().model_dump_json(
+                            "relatedDocument": related_document.to_schema().model_dump(
                                 by_alias=True
                             ),
                         },
