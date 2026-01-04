@@ -5,7 +5,6 @@ from urllib.parse import urlparse
 from app.repositories.knowledge_base import get_knowledge_base_info
 from app.repositories.models.conversation import (
     RelatedDocumentModel,
-    TextToolResultModel,
     JsonToolResultModel
 )
 from app.repositories.models.custom_bot import BotModel
