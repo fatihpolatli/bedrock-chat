@@ -81,11 +81,17 @@ def create_knowledge_search_tool(bot: BotModel | None) -> StrandsAgentTool:
             # Run knowledge search
             results = _search_knowledge_standalone(current_bot, query)
 
-            logger.debug(f"[KNOWLEDGE_SEARCH_V3] Search completed successfully")
-            return {
+            logger.debug(f"[KNOWLEDGE_SEARCH_V3] Search completed successfully | {results}")
+            returnData = {
                 "status": "success",
                 "content": [{"json": result} for result in results],
             }
+
+            logger.debug(
+                f"[KNOWLEDGE_SEARCH_V3] Returning results: {returnData}"
+            )
+
+            return returnData
 
         except Exception as e:
             logger.error(f"[KNOWLEDGE_SEARCH_V3] Knowledge search error: {e}")
