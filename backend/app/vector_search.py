@@ -6,6 +6,7 @@ from app.repositories.knowledge_base import get_knowledge_base_info
 from app.repositories.models.conversation import (
     RelatedDocumentModel,
     TextToolResultModel,
+    JsonToolResultModel
 )
 from app.repositories.models.custom_bot import BotModel
 from app.utils import get_bedrock_agent_runtime_client
@@ -38,8 +39,8 @@ def search_result_to_related_document(
     source_id_base: str,
 ) -> RelatedDocumentModel:
     return RelatedDocumentModel(
-        content=TextToolResultModel(
-            text=search_result["content"],
+        content=JsonToolResultModel(
+            json={"content":search_result["content"],"metadata":search_result["metadata"],"score":search_result["score"]}
         ),
         source_id=f"{source_id_base}@{search_result['rank']}",
         source_name=search_result["source_name"],
