@@ -827,6 +827,8 @@ class RelatedDocumentModel(BaseModel):
                     json={
                         "source_id": self.source_id,
                         "content": self.content.text,
+                        "metadata": self.metadata is not None and json.dumps(self.metadata),
+                        "score": self.score,
                     },
                 )
 
@@ -839,6 +841,8 @@ class RelatedDocumentModel(BaseModel):
                     json={
                         "source_id": self.source_id,
                         "content": self.content.json_,
+                        "metadata": json.dumps(self.metadata),
+                        "score": self.score,
                     },
                 )
 
@@ -866,6 +870,7 @@ class RelatedDocumentModel(BaseModel):
             return self.source_link
 
     def to_schema(self) -> RelatedDocument:
+        logger.info(f"RelatedDocumentModel: {self}")
         return RelatedDocument(
             content=self.content.to_tool_result(),
             source_id=self.source_id,
