@@ -53,6 +53,7 @@ class ToolResultCapture(HookProvider):
     def after_tool_execution(self, event: AfterToolInvocationEvent) -> None:
         """Handler called after a tool is executed."""
         logger.debug("After tool execution: %r", event)
+        logger.info(f"after_tool_execution | Tool result: {event.result}")
 
         # Convert event to ToolRunResult using the new function
         tool_result = strands_tool_result_to_tool_run_result(
