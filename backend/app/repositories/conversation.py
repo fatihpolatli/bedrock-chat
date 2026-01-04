@@ -25,6 +25,7 @@ from app.repositories.models.conversation import (
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 from pydantic import TypeAdapter
+from decimal import *
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -349,7 +350,7 @@ def store_related_documents(
                 "SourceLink": related_document.source_link,
                 "Content": related_document.content.model_dump(by_alias=True),
                 "Metadata": related_document.metadata,
-                "Score": related_document.score,
+                "Score": Decimal(str(related_document.score)),  
             }
             if related_document.page_number is not None:
                 item_params["PageNumber"] = related_document.page_number
