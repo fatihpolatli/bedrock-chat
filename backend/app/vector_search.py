@@ -85,6 +85,15 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
                 "vectorSearchConfiguration": {
                     "numberOfResults": limit,
                     "overrideSearchType": search_type,
+                    "rerankingConfiguration":{
+                       "bedrockRerankingConfiguration":{
+                          "modelConfiguration":{
+                                'modelArn': model_package_arn
+                          },
+                          'numberOfRerankedResults': 20
+                       },
+                       'type': 'BEDROCK_RERANKING_MODEL'
+                   }
                 }
             },
         }
@@ -125,7 +134,6 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
 
         # Send retrieve request
         response = agent_client.retrieve(**retrieve_parameter)
-        logger.info(f"Retrieve response: {response}")
 
         # Extract source from retrieval result
         def extract_source_from_retrieval_result(
