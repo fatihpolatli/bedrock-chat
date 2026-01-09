@@ -49,6 +49,7 @@ BEDROCK_REGION="us-east-1"
 CDK_JSON_OVERRIDE="{}"
 REPO_URL="https://github.com/fatihpolatli/bedrock-chat.git"
 VERSION="v3"
+TITLE_MODEL="amazon-nova-micro"
 
 # Parse command-line arguments for customization
 while [[ "$#" -gt 0 ]]; do
