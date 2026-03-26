@@ -85,6 +85,7 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
                 "vectorSearchConfiguration": {
                     "numberOfResults": limit,
                     "overrideSearchType": search_type,
+                    '''
                     "rerankingConfiguration":{
                        "bedrockRerankingConfiguration":{
                           "modelConfiguration":{
@@ -94,6 +95,7 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
                        },
                        'type': 'BEDROCK_RERANKING_MODEL'
                    }
+                   '''
                 }
             },
         }
