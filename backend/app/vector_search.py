@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from app.repositories.knowledge_base import get_knowledge_base_info
 from app.repositories.models.conversation import (
     RelatedDocumentModel,
-    JsonToolResultModel
+    TextToolResultModel,
 )
 from app.repositories.models.custom_bot import BotModel
 from app.utils import get_bedrock_agent_runtime_client
@@ -28,26 +28,22 @@ class SearchResult(TypedDict):
     source_name: str
     source_link: str
     rank: int
-    page_number: int | None
     metadata: dict[str, Any]
-    score: float
+    page_number: int | None
 
 
 def search_result_to_related_document(
     search_result: SearchResult,
     source_id_base: str,
 ) -> RelatedDocumentModel:
-    logger.info(f"search_result_to_related_document | data {search_result}")
     return RelatedDocumentModel(
-        content=JsonToolResultModel(
-            json={"content":search_result["content"],"metadata":search_result["metadata"],"score":search_result["score"]}
+        content=TextToolResultModel(
+            text=search_result["content"],
         ),
         source_id=f"{source_id_base}@{search_result['rank']}",
         source_name=search_result["source_name"],
         source_link=search_result["source_link"],
         page_number=search_result["page_number"],
-        metadata=search_result["metadata"],
-        score=search_result["score"],   
     )
 
 
@@ -74,8 +70,7 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
         else bot.bedrock_knowledge_base.knowledge_base_id
     )
     assert knowledge_base_id is not None, "knowledge_base_id must be set"
-    rerankModelId = "amazon.rerank-v1:0"
-    model_package_arn = f"arn:aws:bedrock:us-east-1::foundation-model/{rerankModelId}"
+
     try:
         # Init retrieve parameter
         retrieve_parameter: RetrieveRequestTypeDef = {
@@ -85,17 +80,6 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
                 "vectorSearchConfiguration": {
                     "numberOfResults": limit,
                     "overrideSearchType": search_type,
-                    '''
-                    "rerankingConfiguration":{
-                       "bedrockRerankingConfiguration":{
-                          "modelConfiguration":{
-                                'modelArn': model_package_arn
-                          },
-                          'numberOfRerankedResults': 20
-                       },
-                       'type': 'BEDROCK_RERANKING_MODEL'
-                   }
-                   '''
                 }
             },
         }
@@ -137,7 +121,6 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
         # Send retrieve request
         response = agent_client.retrieve(**retrieve_parameter)
 
-        # Extract source from retrieval result
         def extract_source_from_retrieval_result(
             retrieval_result: KnowledgeBaseRetrievalResultTypeDef,
         ) -> tuple[str, str] | None:
@@ -175,13 +158,11 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
         search_results = []
         for i, retrieval_result in enumerate(response.get("retrievalResults", [])):
             content = retrieval_result.get("content", {}).get("text", "")
-            score:float = retrieval_result.get("score", 0)
             source = extract_source_from_retrieval_result(retrieval_result)
 
             if source is not None:
                 # get page number from metadata
-                metadata:dict[str, str] = dict(retrieval_result.get("metadata", {}))
-                logger.info(f"metadata: {metadata}")
+                metadata = retrieval_result.get("metadata", {})
                 page_number = None
                 if "x-amz-bedrock-kb-document-page-number" in metadata:
                     try:
@@ -198,9 +179,8 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
                         content=content,
                         source_name=source[0],
                         source_link=source[1],
-                        page_number=page_number,
                         metadata=metadata,
-                        score=score,
+                        page_number=page_number,
                     )
                 )
 
