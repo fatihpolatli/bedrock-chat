@@ -74,7 +74,7 @@ def _bedrock_knowledge_base_search(bot: BotModel, query: str) -> list[SearchResu
         else bot.bedrock_knowledge_base.knowledge_base_id
     )
     assert knowledge_base_id is not None, "knowledge_base_id must be set"
-    rerankModelId = "cohere.rerank-v3-5:0"
+    rerankModelId = "amazon.rerank-v1:0"
     model_package_arn = f"arn:aws:bedrock:us-east-1::foundation-model/{rerankModelId}"
     try:
         # Init retrieve parameter
